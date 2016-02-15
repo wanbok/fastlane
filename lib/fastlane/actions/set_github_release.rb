@@ -81,6 +81,7 @@ module Fastlane
 
       def self.upload_assets(assets, upload_url_template, api_token)
         assets.each do |asset|
+          raise "Could not find file at path '#{asset}'" unless File.exist?(asset)
           self.upload(asset, upload_url_template, api_token)
         end
       end
@@ -114,7 +115,7 @@ module Fastlane
         headers = self.headers(api_token)
         headers['Content-Type'] = 'application/zip' # how do we detect other types e.g. other binary files? file extensions?
 
-        Helper.log.info "Uploading #{name}".yellow
+        Helper.log.info "Uploading #{name}...".yellow
         response = self.call_endpoint(expanded_url, "post", headers, File.read(file))
 
         # inspect the response
